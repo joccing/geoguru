@@ -1,4 +1,8 @@
 #! /usr/bin/python3.4
+#
+# This program provides a simple command line too to query population statistics.
+# Author: Tay Joc Cing
+#
 
 from classes.country import Country
 from classes.dictionary import createDict
