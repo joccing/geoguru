@@ -10,7 +10,7 @@ from classes.dictionary import createDict
 def main():
 
     from optparse import OptionParser
-    usage = "usage: %prog [option] countries"
+    usage = "usage: %prog [option] <Country Name> [attribute] "
     version = "0.1"
 
     parser = OptionParser( usage = usage, version="%prog " +version )
@@ -22,23 +22,24 @@ def main():
         parser.error("Invalid number of arguments")
 
     if options.filename != None:
-        cdict = createDict( options.filename, options.verbose )
+        cdict = createDict( options.filename, options.verbose, excludeList=['Country'] )
 
         if len(args) >= 1:
 
-            # Process country queries
-            if options.verbose == True:
-                print("Retrieving information about " + args[0] + "...") 
-            
-            if args[0] in cdict:
+            # Find country using regular expression match
+            import re
+            pattern = re.compile( ".*"+args[0]+".*", re.IGNORECASE )
 
-                country = cdict[args[0]]
-                stats = country.getPropertyApprox(r'.*')
-                print("%s:" % args[0] )
-                print(stats)
+            for countryName in list(cdict.keys()):
+                m = pattern.match( countryName )
+                if m:
+                    if options.verbose == True: print("Found",countryName,"...")
+                    country = cdict[countryName]
 
-            else:
-                print("No such country found!")
+                    if len(args) == 2:
+                        print(country.getPropertyString(args[1]))
+                    else:
+                        print(country)            
 
 if __name__ == "__main__":
     main()

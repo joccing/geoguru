@@ -25,18 +25,35 @@ class Country:
     False
     >>> print(c.getPropertyExact("Weather"))
     {'Weather': 'Sunny'}
+    >>> x = Country("India",{"Size":23440,"Weather":"Spring"})
+    >>> print(x.getPropertyString("iz"))
+    Name: India, Size: 23440
+    >>> x = Country("India",{})
+    >>> print(x)
+    Name: India
     >>>
     """
     
     def __init__(self, name, properties={}):
-        self.__name = name
+        self.__name = str(name)
         self.__properties = properties
     
     def __str__(self):
-        text = "Country Name:" + self.__name + "\n"
-        for key in self.__properties:
-            text += "{0}: {1}\n".format(key,self.__properties[key] )
-        return text
+        return self.getPropertyString()
+
+    def getPropertyString(self, regexp=""):
+        """ Formats the information required in a pleasing way """
+        if regexp:
+            attributeDict = self.getPropertyApprox(regexp)
+        else:
+            attributeDict = self.getPropertyApprox(r'.*')
+
+        s = "Name: " + self.__name
+        if attributeDict:
+            s += ", "
+            s += str(attributeDict).strip("{}").replace("'","")
+
+        return s
 
     def getPropertyExact(self,x, *key):
         key = (x,) + key
@@ -48,9 +65,12 @@ class Country:
         import re
 
         matches = {}
+        pattern = re.compile( ".*"+regexp+".*", re.IGNORECASE )
+
         for k in self.__properties:
-            if isinstance(k,str) and re.search( regexp, k ):
+            if isinstance( k, str) and pattern.match( k ):
                 matches[k] = self.__properties[k]
+
         return matches
 
     def setProperty(self, key, value):
