@@ -7,7 +7,7 @@
 if [ $# -lt 2 ]
 then
 	echo Processes data copied directly from population by country data from Worldometers.
-	echo Usage: clean \<raw file\> \<output file\>
+	echo Usage: clean \<raw file\> \<fields file\>
 	exit;
 fi
 
