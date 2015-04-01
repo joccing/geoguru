@@ -20,11 +20,11 @@ $ cmain.py -f raw/data.out Uruguay
 
 or if you can't remember the whole name,
 
-$ cmain.py -f raw/data.out uru
+$ cmain.py -f raw/data.out urug
 
 To find all statistics that involve the substring 'pop'
 
-$ cmain.py -f raw/data.out uru pop
+$ cmain.py -f raw/data.out urug pop
 
 Version History
 ===============
