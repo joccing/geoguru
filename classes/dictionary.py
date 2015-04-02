@@ -6,6 +6,8 @@ if __name__ == '__main__':
 else:
     from classes.country import Country
 
+PICKLE_FILE= ".pick"
+
 def createDict( filename, verbose=False, excludeList=[] ):
     """ Read and construct dictionary of country population statistics """
 
@@ -37,6 +39,30 @@ def createDict( filename, verbose=False, excludeList=[] ):
 
     return cdict
 
+def storeDict( cdict, filename ):
+
+    import pickle
+    try:
+        fhandle = open( filename+PICKLE_FILE, "wb" )
+        pickle.dump( cdict, fhandle )
+    except:
+        print("Error in creating pickle file")
+        return False
+    finally:
+        fhandle.close()
+
+    return True
+
+def readDict( filename, verbose=False, excludeList=[] ):
+
+    try:
+        fhandle = open( filename+PICKLE_FILE, "rb" )
+        return pickle.load( fhandle )
+    except:
+        cdict = createDict( filename, verbose, excludeList )
+        storeDict( cdict, filename )
+        return cdict
+
 def testDict(filename):
     s="""Rank, Country, Population_2014, 1_Year_Change, Population_Change, Migrants_net, Median_Age, Aged_60+, Fertility_Rate, Area_km2, Density_P/km2, Urban_Pop_%, Urban_Population, Share_of_World_Pop
 1 China 1393783836 0.59 8217299 -313996 35.7 14 1.66 9596947 145 54 756300115 19.24
@@ -56,7 +82,7 @@ def testDict(filename):
 
 if __name__ == '__main__':
     testDict("_testDict.tmp")
-    d = createDict( "_testDict.tmp", excludeList=['Country','Rank'] )
+    d = readDict( "_testDict.tmp", excludeList=['Country','Rank'] )
     if len(d) != 10: print("Error encountered with testDict")
     if len(d['Brazil'].getPropertyString().split(',')) != 13: print("Error encountered with exclusion of fields")
     os.remove("_testDict.tmp")
