@@ -1,4 +1,4 @@
-# geoguru 0.1
+# geoguru 0.2
 
 Project to create a database of country specific statistics that can be queried
 
@@ -29,4 +29,5 @@ $ cmain.py -f raw/data.out urug pop
 Version History
 ===============
 
-v0.2	Use Python Shelve module and hide raw/data.out from command line if not provided.
+v0.2	Use Python Pickle module and hide raw/data.out from command line if not provided.
+v0.3	To add logic for  dependency on -f option and if pickle file is found.
