@@ -31,3 +31,4 @@ Version History
 
 v0.2	Use Python Pickle module and hide raw/data.out from command line if not provided.
 v0.3	To add logic for  dependency on -f option and if pickle file is found.
+v0.31	Replaced pickle with shelve instead.  Updated test code in dictionary.py
