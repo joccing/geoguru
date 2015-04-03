@@ -1,6 +1,6 @@
 #! /usr/bin/python3.4
 
-import pickle
+import shelve
 
 if __name__ == '__main__':
     # for unit testing
@@ -9,7 +9,7 @@ else:
     from classes.country import Country
 
 
-PICKLE_FILE= "_countries.pick"
+SHELVE_FILE= "_countries.shelve"
 
 def createDict( filename, verbose=False, excludeList=[] ):
     """ Read and construct dictionary of country population statistics """
@@ -42,16 +42,16 @@ def createDict( filename, verbose=False, excludeList=[] ):
 
     return cdict
 
-def storeDict( cdict, filename ):
+def storeDict( cdict ):
 
     try:
-        fhandle = open( PICKLE_FILE, "wb" )
-        pickle.dump( cdict, fhandle )
+        db = shelve.open( SHELVE_FILE, writeback=True )
+        for k in cdict: db[k] = cdict[k]
     except:
-        print("Error in creating pickle file")
+        print("Error in creating shelve file")
         return False
     finally:
-        fhandle.close()
+        db.close()
 
     return True
 
@@ -61,11 +61,11 @@ def readDict( filename, verbose=False, excludeList=[] ):
     if filename:
         # priority is to use option file first 
        cdict = createDict( filename, verbose, excludeList )
-       storeDict( cdict, PICKLE_FILE )
+       storeDict( cdict )
     else:
         try:
-            fhandle = open( PICKLE_FILE, "rb" )
-            cdict = pickle.load( fhandle )
+            db = shelve.open( SHELVE_FILE, flag="r" )
+            for k in db: cdict[k] = db[k]
         except FileNotFoundError:
             print( "DB creation error" )
         except:
@@ -99,5 +99,7 @@ if __name__ == '__main__':
     if len(d) != 10: print("Error encountered with testDict")
     if len(d['Brazil'].getPropertyString().split(',')) != 13: print("Error encountered with exclusion of fields")
     os.remove("_testDict.tmp")
-    os.remove( PICKLE_FILE )
+    d = readDict( "" )
+    if len(d) != 10: print("Error encountered with readDict")
+    os.remove( SHELVE_FILE )
 
