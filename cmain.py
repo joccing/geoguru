@@ -5,7 +5,7 @@
 #
 
 from classes.country import Country
-from classes.dictionary import createDict
+from classes.dictionary import createDict, readDict
 
 def main():
 
@@ -21,25 +21,24 @@ def main():
     if len(args) < 1 and options.filename == None:
         parser.error("Invalid number of arguments")
 
-    if options.filename != None:
-        cdict = createDict( options.filename, options.verbose, excludeList=['Country'] )
+    cdict = readDict( options.filename, options.verbose, excludeList=['Country'] )
 
-        if len(args) >= 1:
+    if len(args) >= 1 and cdict:
 
-            # Find country using regular expression match
-            import re
-            pattern = re.compile( ".*"+args[0]+".*", re.IGNORECASE )
+        # Find country using regular expression match
+        import re
+        pattern = re.compile( ".*"+args[0]+".*", re.IGNORECASE )
 
-            for countryName in list(cdict.keys()):
-                m = pattern.match( countryName )
-                if m:
-                    if options.verbose == True: print("Found",countryName,"...")
-                    country = cdict[countryName]
+        for countryName in list(cdict.keys()):
+            m = pattern.match( countryName )
+            if m:
+                if options.verbose == True: print("Found",countryName,"...")
+                country = cdict[countryName]
 
-                    if len(args) == 2:
-                        print(country.getPropertyString(args[1]))
-                    else:
-                        print(country)            
+                if len(args) == 2:
+                    print(country.getPropertyString(args[1]))
+                else:
+                    print(country)            
 
 if __name__ == "__main__":
     main()

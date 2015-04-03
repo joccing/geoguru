@@ -1,12 +1,15 @@
 #! /usr/bin/python3.4
 
+import pickle
+
 if __name__ == '__main__':
+    # for unit testing
     from country import Country
-    import os
 else:
     from classes.country import Country
 
-PICKLE_FILE= ".pick"
+
+PICKLE_FILE= "_countries.pick"
 
 def createDict( filename, verbose=False, excludeList=[] ):
     """ Read and construct dictionary of country population statistics """
@@ -41,9 +44,8 @@ def createDict( filename, verbose=False, excludeList=[] ):
 
 def storeDict( cdict, filename ):
 
-    import pickle
     try:
-        fhandle = open( filename+PICKLE_FILE, "wb" )
+        fhandle = open( PICKLE_FILE, "wb" )
         pickle.dump( cdict, fhandle )
     except:
         print("Error in creating pickle file")
@@ -55,13 +57,23 @@ def storeDict( cdict, filename ):
 
 def readDict( filename, verbose=False, excludeList=[] ):
 
-    try:
-        fhandle = open( filename+PICKLE_FILE, "rb" )
-        return pickle.load( fhandle )
-    except:
-        cdict = createDict( filename, verbose, excludeList )
-        storeDict( cdict, filename )
-        return cdict
+    cdict={}
+    if filename:
+        # priority is to use option file first 
+       cdict = createDict( filename, verbose, excludeList )
+       storeDict( cdict, PICKLE_FILE )
+    else:
+        try:
+            fhandle = open( PICKLE_FILE, "rb" )
+            cdict = pickle.load( fhandle )
+        except FileNotFoundError:
+            print( "DB creation error" )
+        except:
+            import sys
+            print( "Unexpected error:", sys.exc_info()[0] )
+            raise
+
+    return cdict
 
 def testDict(filename):
     s="""Rank, Country, Population_2014, 1_Year_Change, Population_Change, Migrants_net, Median_Age, Aged_60+, Fertility_Rate, Area_km2, Density_P/km2, Urban_Pop_%, Urban_Population, Share_of_World_Pop
@@ -81,9 +93,11 @@ def testDict(filename):
     return f
 
 if __name__ == '__main__':
+    import os
     testDict("_testDict.tmp")
     d = readDict( "_testDict.tmp", excludeList=['Country','Rank'] )
     if len(d) != 10: print("Error encountered with testDict")
     if len(d['Brazil'].getPropertyString().split(',')) != 13: print("Error encountered with exclusion of fields")
     os.remove("_testDict.tmp")
+    os.remove( PICKLE_FILE )
 
