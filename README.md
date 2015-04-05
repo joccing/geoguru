@@ -32,4 +32,4 @@ Version History
 v0.2	Use Python Pickle module and hide raw/data.out from command line if not provided.
 v0.3	To add logic for  dependency on -f option and if pickle file is found.
 v0.4	Updated test code in dictionary.py, removed second argument in storeDict. Same done in 0.31.
-v0.41	To refactor query function in cmain.py into country.py.
+v0.41	To refactor query function in cmain.py into country.py using a data manager.

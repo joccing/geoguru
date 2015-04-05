@@ -14,12 +14,12 @@ from datamanager import DataManager
 def main():
 
     from optparse import OptionParser
-    usage = "usage: %prog [option] <Country Name> [attribute] "
-    version = "0.1"
+    usage = "usage: %prog [option] <Country regex> [attribute regex] "
+    version = "0.41"
 
     parser = OptionParser( usage = usage, version="%prog " +version )
     parser.add_option("-v", "--verbose", action="store_true", dest="verbose", default=False, help="Make lots of noise")
-    parser.add_option("-f", "--file", action="store", dest="filename", help="Initialize shelve for country stats")
+    parser.add_option("-f", "--file", action="store", dest="filename", help="Initialize store for country stats")
     (options, args) = parser.parse_args()
 
     if len(args) < 1 and options.filename == None:
