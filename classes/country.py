@@ -19,9 +19,9 @@ class Country:
     {'Population': 5000000}
     >>> print(c.getPropertyApprox(r'Den'))
     {'Density_km2': 800.2}
-    >>> c.setProperty("Weather","Sunny")
+    >>> c.setPropertyExact("Weather","Sunny")
     True
-    >>> c.setProperty("Main_Industry","Argriculture")
+    >>> c.setPropertyExact("Main_Industry","Argriculture")
     False
     >>> print(c.getPropertyExact("Weather"))
     {'Weather': 'Sunny'}
@@ -73,9 +73,16 @@ class Country:
 
         return matches
 
-    def setProperty(self, key, value):
+    def setPropertyExact(self, key, value):
         if key in self.__properties:
             self.__properties[key] = value
+            return True
+        else:
+            return False
+
+    def removePropertyExact(self, key):
+        if key in self.__properties:
+            del self.__properties[key]
             return True
         else:
             return False
@@ -84,8 +91,3 @@ if __name__ == '__main__':
 
     import doctest
     doctest.testmod()
-
-#    c = Country("Singapore", {"Population":5000000, "Density_km2": 800.2, "Weather":"Tropical"})
-#    print(c,end="")
-#    print(c.getPropertyExact("Population"))
-#    print(c.getPropertyApprox(r'e'))

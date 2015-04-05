@@ -1,13 +1,7 @@
 #! /usr/bin/python3.4
 
 import pickle
-
-if __name__ == '__main__':
-    # for unit testing
-    from country import Country
-else:
-    from classes.country import Country
-
+from country import Country
 
 PICKLE_FILE= "_countries.pick"
 
@@ -32,7 +26,7 @@ def createDict( filename, verbose=False, excludeList=[] ):
                     for field in excludeList:
                         if field in propertyDict: del propertyDict[field]
                     
-                    # Store Country object into the dictionary
+                    # Store Country object into the dictionary using its name as key
                     cdict[statsList[1]] = Country( statsList[1], propertyDict )
                 else:
                     if verbose: print("Error: {0} duplicate found!".format( statsList[1] ) )

@@ -4,8 +4,12 @@
 # Author: Tay Joc Cing
 #
 
-from classes.country import Country
-from classes.dictionary import createDict, readDict
+import sys
+import os
+sys.path.append( os.getcwd() + "/classes" )
+
+from country import Country
+from datamanager import DataManager
 
 def main():
 
@@ -21,24 +25,16 @@ def main():
     if len(args) < 1 and options.filename == None:
         parser.error("Invalid number of arguments")
 
-    cdict = readDict( options.filename, options.verbose, excludeList=['Country'] )
+    dm = DataManager(options.filename, options.verbose, excludeList=['Country'])
 
-    if len(args) >= 1 and cdict:
+    if len(args) >= 1 and dm.getSize() > 0:
 
         # Find country using regular expression match
-        import re
-        pattern = re.compile( ".*"+args[0]+".*", re.IGNORECASE )
+        result = dm.getCountryApprox( args[0] )
+        propertyRE = args[1] if len(args) == 2 else ""
 
-        for countryName in list(cdict.keys()):
-            m = pattern.match( countryName )
-            if m:
-                if options.verbose == True: print("Found",countryName,"...")
-                country = cdict[countryName]
-
-                if len(args) == 2:
-                    print(country.getPropertyString(args[1]))
-                else:
-                    print(country)            
+        for c in result:
+            print( c.getPropertyString(propertyRE) )
 
 if __name__ == "__main__":
     main()
