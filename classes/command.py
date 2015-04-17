@@ -5,16 +5,31 @@
 # Date: 11 April 2015
 #
 
+from datamanager import loadDataManager
+
 __Greeting = "Command line interpreter v1.0"
 __Cursor = ">>>"
 __exitCommand = "exit"
 
 def sayHello( options ):
-    print("Hello World! - " + repr(options))
+    if options:
+        print("Hello World! - " + repr(options))
+
+def setVerbose( heapDict, args ):
+
+    if len(args) > 0:
+        return True if args[0] == 'on' else False
+    else:
+        return False
+
 
 __commands = {
-    "hi": sayHello
+    "hi": sayHello,
+    "load": loadDataManager,
+    "verbose": setVerbose
 }
+
+__results = {}
 
 def CommandDispatcher( verbose=False, commands=__commands, greeting=__Greeting, cursor=__Cursor, exitCommand=__exitCommand ):
     
@@ -31,7 +46,7 @@ def CommandDispatcher( verbose=False, commands=__commands, greeting=__Greeting, 
             continue
         else:
             if __tokens[0] in __commands.keys():
-                __commands[__tokens[0]](__tokens[1:] if len(__tokens) > 1 else "No arguments")
+                __results[__tokens[0]] = __commands[__tokens[0]]( __results, __tokens[1:] if len(__tokens) > 1 else None)
             else:
                 print("Command '%s' not found!" % __tokens[0])
 

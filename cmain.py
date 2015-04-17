@@ -17,7 +17,7 @@ def main():
 
     from optparse import OptionParser
     usage = "usage: %prog [[option] <Country regex> [attribute regex]] "
-    version = "0.5"
+    version = "0.51"
 
     parser = OptionParser( usage = usage, version="%prog " +version )
     parser.add_option("-v", "--verbose", action="store_true", dest="verbose", default=False, help="Make lots of noise")

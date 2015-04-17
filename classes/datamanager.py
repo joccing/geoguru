@@ -37,13 +37,28 @@ class DataManager:
     def getSize(self):
         return len(self.__storeDB)
 
+def loadDataManager( heapDict, args ):
+    """ This method is used when called within the command line interactive mode"""
+    fname = args[0] if len(args) > 0 else None
+    verbose = heapDict.get('verbose',False) if heapDict else False    
+    more = args[1:] if len(args) > 1 else []
+
+    return DataManager( fname, verbose, more )
+
 if __name__ == '__main__':
 
     import os
     testDict("__testDict.tmp")
+
     dm = DataManager( "__testDict.tmp" )
     if dm.getSize() != 10: print("Error in creation of DataManager instance")
     if dm.exclude( ['Country','Rank'] ) != 20: print("Error in removal of property fields")
     r = dm.getCountryApprox( r'ch' )
     if len(r) < 1: print("Error in retrieving country objects by regex")
+
+    dm = loadDataManager( {'verbose':False}, ["__testDict.tmp",'Country','Rank'] )
+    if dm.getSize() != 10: print("Error in creation through loadDataManager")
+    r = dm.getCountryApprox( r'ch' )
+    if len(r) < 1: print("Error in retrieving country objects by regex")
+
     os.remove("__testDict.tmp")
