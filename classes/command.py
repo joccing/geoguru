@@ -5,54 +5,63 @@
 # Date: 11 April 2015
 #
 
-from datamanager import loadDataManager
+from datamanager import cmd_load
+from constants import *
 
-__Greeting = "Command line interpreter v1.0"
-__Cursor = ">>>"
-__exitCommand = "exit"
+def cmd_hi( heapDict, args ):
+    n = APP_NAME
+    if args and len(args) > 0:
+        n = args[0]
+        print("Ok, my name shall be " + args[0])
+    else:
+        print("Welcome! I am %s!" % n)
+    return n
 
-def sayHello( options ):
-    if options:
-        print("Hello World! - " + repr(options))
+def cmd_verbose( heapDict, args ):
 
-def setVerbose( heapDict, args ):
-
-    if len(args) > 0:
+    if args and len(args) > 0:
         return True if args[0] == 'on' else False
     else:
         return False
 
+def cmd_quit( heapDict, args ):
+    if heapDict.get( CMD_VERBOSE, False ):
+        print( "Goodbye!" )
+    return False
+
+def cmd_cr( heapDict, args ):
+    pass
+
+################################################################################
 
 __commands = {
-    "hi": sayHello,
-    "load": loadDataManager,
-    "verbose": setVerbose
+
+    CMD_HI: cmd_hi,
+    CMD_LOAD: cmd_load,
+    CMD_VERBOSE: cmd_verbose,
+    CMD_QUIT: cmd_quit,
+    CMD_CR: cmd_cr
 }
 
 __results = {}
 
-def CommandDispatcher( verbose=False, commands=__commands, greeting=__Greeting, cursor=__Cursor, exitCommand=__exitCommand ):
-    
-    if verbose: print(__Greeting)
-    while True:
+###############################################################################
 
-        __commandStr = input(cursor+" ").strip()
+def CommandDispatcher( commands=__commands, cursor=IM_PROMPT ):
+
+    while __results.get( CMD_QUIT, True ):
+
+        __commandStr = input(IM_PROMPT+" ").strip()
         __tokens = extract(__commandStr)
 
-        if __tokens[0].lower() == exitCommand: 
-            if verbose: print( "Goodbye!" )
-            break
-        elif __tokens[0] == '':
-            continue
+        if __tokens[0] in __commands.keys():
+            __results[__tokens[0]] = __commands[__tokens[0]]( __results, __tokens[1:] if len(__tokens) > 1 else None)
         else:
-            if __tokens[0] in __commands.keys():
-                __results[__tokens[0]] = __commands[__tokens[0]]( __results, __tokens[1:] if len(__tokens) > 1 else None)
-            else:
-                print("Command '%s' not found!" % __tokens[0])
+            print("Command '%s' not found!" % __tokens[0])
 
 def extract( s ):
     """Extract tokens from an input string"""
-    return s.split(" ")
+    return s.lower().split(" ")
 
 if __name__ == '__main__':
-    CommandDispatcher( True )
+    CommandDispatcher()

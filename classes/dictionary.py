@@ -9,30 +9,34 @@ def createDict( filename, verbose=False, excludeList=[] ):
     """ Read and construct dictionary of country population statistics """
 
     cdict = {}
-    with open(filename,"r") as f:
-        fields = f.readline().replace(",","").strip()
-        fieldsList = fields.split(' ')
 
-        # Read in country data to form dictionary
-        for line in f:
-            statsList = line.strip().split(' ')
-            if len(statsList) != len(fieldsList):
-                print("Mismatch error in fields and country data!")
-                break
-            else:
-                if statsList[1] not in cdict:
-                    # Remove 'Country' field
-                    propertyDict = dict(zip(fieldsList,statsList))
-                    for field in excludeList:
-                        if field in propertyDict: del propertyDict[field]
-                    
-                    # Store Country object into the dictionary using its name as key
-                    cdict[statsList[1]] = Country( statsList[1], propertyDict )
+    try:
+        f = open(filename, "r")
+    except IOError:
+        print( "Error reading file:", filename)
+    else:
+        with f:
+            fields = f.readline().replace(",","").strip()
+            fieldsList = fields.split(' ')
+
+            # Read in country data to form dictionary
+            for line in f:
+                statsList = line.strip().split(' ')
+                if len(statsList) != len(fieldsList):
+                    print("Mismatch error in fields and country data!")
+                    break
                 else:
-                    if verbose: print("Error: {0} duplicate found!".format( statsList[1] ) )
+                    # check if this country has already been added earlier
+                    if statsList[1] not in cdict:
 
-    if verbose == True:
-        print("Country dictionary created with %d entries." % len(cdict))
+                        propertyDict = dict(zip(fieldsList,statsList))
+                        for field in excludeList:
+                            if field in propertyDict: del propertyDict[field]
+
+                        # Store Country object into the dictionary using its name as key
+                        cdict[statsList[1]] = Country( statsList[1], propertyDict )
+                    else:
+                        if verbose: print("Error: {0} duplicate found!".format( statsList[1] ) )
 
     return cdict
 
@@ -42,7 +46,7 @@ def storeDict( cdict ):
         fhandle = open( PICKLE_FILE, "wb" )
         pickle.dump( cdict, fhandle )
     except:
-        print("Error in creating pickle file")
+        print("Error in creating cached DB")
         return False
     finally:
         fhandle.close()
@@ -52,22 +56,41 @@ def storeDict( cdict ):
 def readDict( filename, verbose=False, excludeList=[] ):
 
     cdict={}
-    if filename:
+    if filename and filename.strip():
         # priority is to use option file first 
        cdict = createDict( filename, verbose, excludeList )
-       storeDict( cdict )
+
+       # check for error with given filename, if none, store results
+       # else try to retrieve from cached file
+       if cdict and storeDict( cdict ):
+           print("New country DB has %d entries." % len(cdict))
+       else:
+           return readDict("", verbose, excludeList )
     else:
+        if verbose: print("Trying cached DB file..")
         try:
             fhandle = open( PICKLE_FILE, "rb" )
             cdict = pickle.load( fhandle )
+            fhandle.close()
         except FileNotFoundError:
-            print( "DB creation error" )
+            if verbose: print( "No cached DB file found" )
         except:
             import sys
-            print( "Unexpected error:", sys.exc_info()[0] )
+            print( "\nUnexpected error:", sys.exc_info()[0] )
             raise
+        else:
+            if len(cdict) > 0: 
+                print("Using cached DB with %d entries." % len(cdict))
+            else:
+                # detected empty cached file, so remove it
+                import os
+                os.remove( PICKLE_FILE )
+                if verbose: print( "Unable to use cached DB")
 
     return cdict
+
+def getDictName():
+    return PICKLE_FILE
 
 def testDict(filename):
     s="""Rank, Country, Population_2014, 1_Year_Change, Population_Change, Migrants_net, Median_Age, Aged_60+, Fertility_Rate, Area_km2, Density_P/km2, Urban_Pop_%, Urban_Population, Share_of_World_Pop
@@ -95,5 +118,5 @@ if __name__ == '__main__':
     os.remove("_testDict.tmp")
     d = readDict( "" )
     if len(d) != 10: print("Error encountered with readDict")
-    os.remove( PICKLE_FILE )
+    os.remove( getDictName() )
 

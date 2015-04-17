@@ -12,24 +12,25 @@ sys.path.append( os.getcwd() + "/classes" )
 from country import Country
 from datamanager import DataManager
 from command import CommandDispatcher
+from constants import *
 
 def main():
 
     from optparse import OptionParser
     usage = "usage: %prog [[option] <Country regex> [attribute regex]] "
-    version = "0.51"
+    version = APP_VERSION
 
     parser = OptionParser( usage = usage, version="%prog " +version )
     parser.add_option("-v", "--verbose", action="store_true", dest="verbose", default=False, help="Make lots of noise")
     parser.add_option("-f", "--file", action="store", dest="filename", help="Initialize store for country stats")
     (options, args) = parser.parse_args()
 
-    dm = DataManager(options.filename, options.verbose, excludeList=['Country'])
     if len(args) < 1 and options.filename == None:
         # interactive mode
-        CommandDispatcher( dm, options.verbose )
-        
+        CommandDispatcher()
     else:
+        dm = DataManager(options.filename, options.verbose, excludeList=['Country'])
+        
         # command line query mode
         if len(args) >= 1 and dm.getSize() > 0:
 

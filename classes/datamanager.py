@@ -2,7 +2,7 @@
 #
 # This class encapsulates the storage and retrieval of country data.
 
-from dictionary import readDict, testDict
+from dictionary import readDict, testDict, getDictName
 from country import Country
 
 class DataManager:
@@ -37,13 +37,17 @@ class DataManager:
     def getSize(self):
         return len(self.__storeDB)
 
-def loadDataManager( heapDict, args ):
+def cmd_load( heapDict, args ):
     """ This method is used when called within the command line interactive mode"""
-    fname = args[0] if len(args) > 0 else None
-    verbose = heapDict.get('verbose',False) if heapDict else False    
-    more = args[1:] if len(args) > 1 else []
+    verbose = heapDict.get('verbose',False)
 
-    return DataManager( fname, verbose, more )
+    if args:
+        fname = args[0] if len(args) > 0 else ""
+        more = args[1:] if len(args) > 1 else []
+        return DataManager( fname, verbose, more )
+    else:
+        if verbose: print("No arguments given!")
+        return None
 
 if __name__ == '__main__':
 
@@ -56,9 +60,10 @@ if __name__ == '__main__':
     r = dm.getCountryApprox( r'ch' )
     if len(r) < 1: print("Error in retrieving country objects by regex")
 
-    dm = loadDataManager( {'verbose':False}, ["__testDict.tmp",'Country','Rank'] )
+    dm = cmd_load( {'verbose':False}, ["__testDict.tmp",'Country','Rank'] )
     if dm.getSize() != 10: print("Error in creation through loadDataManager")
     r = dm.getCountryApprox( r'ch' )
     if len(r) < 1: print("Error in retrieving country objects by regex")
 
+    os.remove( getDictName() )
     os.remove("__testDict.tmp")
