@@ -6,13 +6,14 @@
 
 APP_NAME = "Geoguru"
 APP_AUTHOR = "Tay Joc Cing"
-APP_VERSION = "0.51"
+APP_VERSION = "0.53"
 
 CMD_VERBOSE = 'verbose'
 CMD_LOAD = 'load'
 CMD_HI = 'hi'
 CMD_QUIT = 'exit'
 CMD_CR = ''
+CMD_QUERY = 'select'
 
 IM_GREETING = APP_NAME + " " + APP_VERSION + " by " + APP_AUTHOR
 IM_PROMPT = ">"

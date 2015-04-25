@@ -11,7 +11,7 @@ sys.path.append( os.getcwd() + "/classes" )
 
 from country import Country
 from datamanager import DataManager
-from command import CommandDispatcher
+from dispatcher import CommandDispatcher
 from constants import *
 
 def main():
@@ -36,6 +36,8 @@ def main():
 
             # Find countries using regular expression match
             result = dm.getCountryApprox( args[0] )
+
+            # if no arguments, then assume all country stats are requested
             propertyRE = args[1] if len(args) == 2 else ""
             for c in result:
                 print( c.getPropertyString(propertyRE) )

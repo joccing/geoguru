@@ -36,3 +36,4 @@ v0.41	To refactor query function in cmain.py into country.py using a data manage
 v0.5	Added a basic command dispatcher for interactive mode.
 v0.51	Create load, verbose commands for interactive mode
 v0.52	Fix bug: loading erroneous file name in IM results in no data for command line command
+v0.53	Create query command for interactive mode

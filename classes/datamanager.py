@@ -37,21 +37,11 @@ class DataManager:
     def getSize(self):
         return len(self.__storeDB)
 
-def cmd_load( heapDict, args ):
-    """ This method is used when called within the command line interactive mode"""
-    verbose = heapDict.get('verbose',False)
-
-    if args:
-        fname = args[0] if len(args) > 0 else ""
-        more = args[1:] if len(args) > 1 else []
-        return DataManager( fname, verbose, more )
-    else:
-        if verbose: print("No arguments given!")
-        return None
-
 if __name__ == '__main__':
 
     import os
+    from command import cmd_load
+
     testDict("__testDict.tmp")
 
     dm = DataManager( "__testDict.tmp" )

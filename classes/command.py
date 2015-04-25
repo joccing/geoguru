@@ -1,11 +1,11 @@
 #! /usr/bin/python3.4
 #
-# This is a command interpreter for interactive mode
+# This contains commands for the interactive mode
 # Author: Tay Joc Cing
-# Date: 11 April 2015
+# Date: 25 April 2015
 #
 
-from datamanager import cmd_load
+from datamanager import DataManager
 from constants import *
 
 def cmd_hi( heapDict, args ):
@@ -32,36 +32,39 @@ def cmd_quit( heapDict, args ):
 def cmd_cr( heapDict, args ):
     pass
 
-################################################################################
+def cmd_load( heapDict, args ):
+    """ This method is used when called within the command line interactive mode"""
+    verbose = heapDict.get('verbose',False)
 
-__commands = {
+    if args:
+        fname = args[0] if len(args) > 0 else ""
+        more = args[1:] if len(args) > 1 else []
+        return DataManager( fname, verbose, more )
+    else:
+        if verbose: print("No arguments given!")
+        return None
 
-    CMD_HI: cmd_hi,
-    CMD_LOAD: cmd_load,
-    CMD_VERBOSE: cmd_verbose,
-    CMD_QUIT: cmd_quit,
-    CMD_CR: cmd_cr
-}
+def cmd_query( heapDict, args ):
+    """This function provides query capability to the command line interactive mode"""
 
-__results = {}
+    dm = heapDict.get('load',None)
+    result = None
 
-###############################################################################
+    if not dm:
+        print( "No database loaded yet. Use 'load' command first.")
+        return None
 
-def CommandDispatcher( commands=__commands, cursor=IM_PROMPT ):
+    if args and len(args) > 0:
 
-    while __results.get( CMD_QUIT, True ):
+        # Find countries using regular expression match
+        result = dm.getCountryApprox( args[0] )
 
-        __commandStr = input(IM_PROMPT+" ").strip()
-        __tokens = extract(__commandStr)
+        # if no arguments, then assume all country stats are requested
+        propertyRE = args[1] if len(args) == 2 else ""
+        for c in result:
+            print( c.getPropertyString(propertyRE) )
 
-        if __tokens[0] in __commands.keys():
-            __results[__tokens[0]] = __commands[__tokens[0]]( __results, __tokens[1:] if len(__tokens) > 1 else None)
-        else:
-            print("Command '%s' not found!" % __tokens[0])
+    # store countries of query match
+    return result
 
-def extract( s ):
-    """Extract tokens from an input string"""
-    return s.lower().split(" ")
-
-if __name__ == '__main__':
-    CommandDispatcher()
+    
