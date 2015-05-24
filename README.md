@@ -1,4 +1,4 @@
-# geoguru 0.5.3
+# geoguru v0.5.3
 
 Project to create a database of country specific statistics that can be queried.
 
