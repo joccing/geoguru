@@ -1,4 +1,3 @@
-#! /usr/bin/python3.4
 #
 # This class encapsulates the storage and retrieval of country data.
 

@@ -1,4 +1,3 @@
-#! /usr/bin/python3.4
 
 """
 This is a system to query statistics for a country by approximate name match.

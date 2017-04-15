@@ -1,4 +1,3 @@
-#! /usr/bin/python3.4
 #
 # This is a command interpreter for interactive mode
 # Author: Tay Joc Cing

@@ -1,4 +1,3 @@
-#! /usr/bin/python3.4
 #
 # This module contains global constants that are shared between classes and functions.
 # Author: Tay Joc Cing

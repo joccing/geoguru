@@ -1,4 +1,3 @@
-#! /usr/bin/python3.4
 #
 # This contains commands for the interactive mode
 # Author: Tay Joc Cing
