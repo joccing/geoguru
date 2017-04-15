@@ -7,12 +7,12 @@
 import sys
 import os
 
+sys.path.append(os.getcwd() + "/classes")
+
 from country import Country
 from datamanager import DataManager
 from dispatcher import CommandDispatcher
 from constants import *
-
-sys.path.append(os.getcwd() + "/classes")
 
 def main():
 
