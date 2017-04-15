@@ -1,4 +1,3 @@
-#! /usr/bin/python3.6
 #
 # This program provides a simple command line to query population statistics.
 # Author: Tay Joc Cing
